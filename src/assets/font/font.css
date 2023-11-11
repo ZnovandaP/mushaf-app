@@ -1,0 +1,5 @@
+@font-face {
+  font-family: LMTQ-Quran;
+  src: url("./LPMQ-IsepMisbah.woff2") format("woff2"),
+    url("./LPMQ-IsepMisbah.ttf") format("ttf");
+}
