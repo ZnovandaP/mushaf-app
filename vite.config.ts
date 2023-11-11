@@ -2,11 +2,31 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import  webfontDownload from 'vite-plugin-webfont-dl'
 import { VitePWA } from 'vite-plugin-pwa'
-import { chunkSplitPlugin } from 'vite-plugin-chunk-split';
+import {dependencies} from './package.json'
+
+const exclVendors = ['react', 'react-router-dom', 'react-dom']
+function renderChunks(deps: Record<string, string>) {
+  let chunks = {}
+  Object.keys(deps).forEach((key) => {
+    if (exclVendors.includes(key)) return
+    chunks[key] = [key]
+  })
+  return chunks
+}
 
 const weekInSecond = 7 * 24 * 60 * 60
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          ...renderChunks(dependencies),
+        },
+      },
+    },
+  },
   envPrefix: 'MUSHAF_APP',
   plugins: [
     react(),
@@ -14,9 +34,6 @@ export default defineConfig({
       'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap',
       'https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&display=swap',
     ]),
-    chunkSplitPlugin({
-      strategy:'single-vendor',
-    }),
     VitePWA({
       registerType: 'autoUpdate',
       minify: true,
